@@ -1,10 +1,18 @@
 package ru.philimonov.springcourse.controllers;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.philimonov.springcourse.models.Person;
+import ru.philimonov.springcourse.services.ItemService;
 import ru.philimonov.springcourse.services.PeopleService;
 
 import javax.validation.Valid;
@@ -17,15 +25,21 @@ import javax.validation.Valid;
 public class PeopleController {
 
     private final PeopleService peopleService;
+    private final ItemService itemService;
 
     @Autowired
-    public PeopleController(PeopleService peopleService) {
+    public PeopleController(PeopleService peopleService, ItemService itemService) {
         this.peopleService = peopleService;
+        this.itemService = itemService;
     }
 
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("people", peopleService.findAll());
+        itemService.findByItemName("Book");
+        itemService.findByOwner(peopleService.findAll().get(0));
+
+        peopleService.test();
         return "people/index";
     }
 
